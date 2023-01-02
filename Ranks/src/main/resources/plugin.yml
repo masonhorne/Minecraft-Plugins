@@ -1,0 +1,18 @@
+name: Ranks
+version: 1.0
+main: ranks.Ranks
+api-version: 1.19
+commands:
+  ranks:
+    description: Used to manage server ranks.
+    usage: /<command> <args> [opt args]
+    permission: ranks.admin
+    permission-message: You do not have permission!
+permissions:
+  ranks.admin:
+    description: Allow use of the ranks commands.
+    default: op
+
+
+
+

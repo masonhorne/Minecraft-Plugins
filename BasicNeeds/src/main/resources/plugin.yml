@@ -1,0 +1,37 @@
+name: BasicNeeds
+version: 1.0
+main: basicneeds.BasicNeeds
+api-version: 1.19
+commands:
+  sethome:
+    description: Sets the home teleport location for a user.
+    aliases:
+      - sh
+    usage: /sethome
+  home:
+    description: Teleports the user to their home.
+    usage: /home
+  requesttp:
+    description: Request to teleport to a provided player.
+    aliases:
+      - rtp
+      - reqtp
+    usage: /requesttp <player>
+  rtpaccept:
+    description: Accepts the current teleport request.
+    aliases:
+      - rtpa
+    usage: /rtpaccept
+  rtpdeny:
+    description: Denies the current teleport request.
+    aliases:
+      - rtpd
+    usage: /rtpdeny
+  spawn:
+    description: Teleports the user to spawn.
+    usage: /spawn
+permissions:
+  basicneeds.spawnadmin:
+    description: Allow modification of the spawn region.
+    default: op
+

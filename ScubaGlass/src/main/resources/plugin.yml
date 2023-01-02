@@ -1,0 +1,9 @@
+name: ScubaGlass
+version: 1.0
+main: scubaglass.ScubaGlass
+api-version: 1.19
+commands:
+  scuba:
+    description: Equips an in-hand glass block as scuba gear.
+    usage: /scuba
+
