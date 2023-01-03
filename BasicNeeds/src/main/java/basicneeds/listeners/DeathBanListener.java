@@ -1,8 +1,10 @@
 package basicneeds.listeners;
 
+import basicneeds.BasicNeeds;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,8 +23,13 @@ public class DeathBanListener implements Listener {
         // Get the player and timestamp to unban
         Player player = event.getEntity();
         Date date = new Date(System.currentTimeMillis() + BAN_TIME_IN_MINUTES * 60 * 1000);
-        // Ban and kick the player who died
-        Bukkit.getBanList( BanList.Type.NAME ).addBan(player.getName(), ChatColor.DARK_RED + "Death ban for " + BAN_TIME_IN_MINUTES + " minutes.", date, null);
-        player.kickPlayer( ChatColor.DARK_RED + "You died. Try rejoining in " + BAN_TIME_IN_MINUTES + " minutes." );
+        Bukkit.getScheduler().runTaskLater( BasicNeeds.getPlugin(), new Runnable()  {
+
+            @Override public void run () {
+                // Ban and kick the player who died
+                Bukkit.getBanList( BanList.Type.NAME ).addBan(player.getName(), ChatColor.DARK_RED + "Death ban for " + BAN_TIME_IN_MINUTES + " minutes.", date, null);
+                player.kickPlayer( ChatColor.DARK_RED + "You died. Try rejoining in " + BAN_TIME_IN_MINUTES + " minutes." );
+            }
+        }, 1L);
     }
 }
