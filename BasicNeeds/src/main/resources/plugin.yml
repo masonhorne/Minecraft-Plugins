@@ -31,7 +31,7 @@ commands:
     description: Teleports the user to spawn.
     usage: /spawn
 permissions:
-  basicneeds.spawnadmin:
+  basicneeds.admin:
     description: Allow modification of the spawn region.
     default: op
 
