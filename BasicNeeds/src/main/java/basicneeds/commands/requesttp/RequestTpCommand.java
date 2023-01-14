@@ -29,17 +29,20 @@ public class RequestTpCommand implements CommandExecutor {
         Date date = new Date();
         DateFormat formatter = new SimpleDateFormat( "MMM dd YYYY | HH:mm:ss" );
         // If not 1 argument, display error message.
-        if(strings.length != 1 || !InputSanitation.isValidUsername( strings[0] )) player.sendMessage( ChatColor.YELLOW + "Please provide a valid username to request a teleport to." );
+        if(strings.length != 1 || !InputSanitation.isValidUsername( strings[0] )) player.sendMessage( ChatColor.YELLOW + "Please provide a valid username to request a teleport to.\n/requesttp <user>" );
         else {
             // Otherwise, request a tp to the player provided
             Player recipient = getPlayer(strings[0]);
-            // Get the player data
-            PersistentDataContainer pdc = recipient.getPersistentDataContainer();
-            // Store the current players request with time
-            pdc.set(key, PersistentDataType.STRING, player.getName() + "," + formatter.format(date));
-            // Send a message to the requested player to notify them
-            recipient.sendMessage( ChatColor.RED + player.getName() + ChatColor.YELLOW + " is requesting to teleport to you.\nUse /requesttp accept or /requesttp deny respond.\nThis request will expire in 15 seconds." );
-            player.sendMessage( ChatColor.YELLOW + "Request sent." );
+            if(recipient == null) sender.sendMessage(ChatColor.DARK_RED + "The user you are requesting to teleport to cannot be found.\nRequested User: " + strings[0]);
+            else {
+                // Get the player data
+                PersistentDataContainer pdc = recipient.getPersistentDataContainer();
+                // Store the current players request with time
+                pdc.set( key, PersistentDataType.STRING, player.getName() + "," + formatter.format( date ) );
+                // Send a message to the requested player to notify them
+                recipient.sendMessage( ChatColor.RED + player.getName() + ChatColor.YELLOW + " is requesting to teleport to you.\nUse /requesttp accept or /requesttp deny respond.\nThis request will expire in 15 seconds." );
+                player.sendMessage( ChatColor.YELLOW + "Request sent." );
+            }
         }
         return true;
     }

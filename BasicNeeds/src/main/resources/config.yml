@@ -1,0 +1,6 @@
+#########################################################
+#                   BasicNeeds Config                   #
+#########################################################
+
+# World that /spawn will teleport the player to
+spawn-world: "world"

@@ -7,6 +7,7 @@
 - Temporarily bans users for 15 minutes upon death.
 - Players will drop their heads upon death.
 - Spawners can be mined using a tool with the enchantment Silk Touch.
+- Players cannot starve to death.
 ### Commands
 - **/sethome**: Sets the users home.
 - **/home:** Teleports the user to their home location.
@@ -14,6 +15,8 @@
 - **/requesttp <user>:** Sends a teleport request to a user.
 - **/rtpaccept:** Accepts the previous teleport request.
 - **/rtpdeny:** Denies the previous teleport request.
+- **/back:** Teleports the player to their previous location.
+- **/seen <user>:** Displays the last time a player was online.
 ## Ranks
 ### Commands
 - **/ranks check <user> <permission>:** Checks if a given user has access to the provided permission.

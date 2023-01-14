@@ -1,12 +1,15 @@
 package basicneeds;
 
+import basicneeds.commands.back.BackCommand;
 import basicneeds.commands.home.HomeCommand;
 import basicneeds.commands.home.SetHomeCommand;
 import basicneeds.commands.requesttp.RequestTpAcceptCommand;
 import basicneeds.commands.requesttp.RequestTpCommand;
 import basicneeds.commands.requesttp.RequestTpDenyCommand;
+import basicneeds.commands.seen.SeenCommand;
 import basicneeds.commands.spawn.SpawnCommand;
 import basicneeds.listeners.*;
+import basicneeds.utility.ConfigFile;
 import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,16 +19,7 @@ public class BasicNeeds extends JavaPlugin {
 
     private static BasicNeeds plugin;
 
-    @Override
-    public void onDisable () {
-        super.onDisable();
-    }
-
-    @Override
-    public void onEnable () {
-        super.onEnable();
-        // Store plugin for access in other areas
-        plugin = this;
+    private void loadCommands() {
         // Set the command executors
         plugin.getCommand("requesttp").setExecutor(new RequestTpCommand());
         plugin.getCommand("rtpaccept").setExecutor(new RequestTpAcceptCommand());
@@ -33,6 +27,11 @@ public class BasicNeeds extends JavaPlugin {
         plugin.getCommand("sethome").setExecutor(new SetHomeCommand());
         plugin.getCommand("home").setExecutor(new HomeCommand());
         plugin.getCommand("spawn").setExecutor(new SpawnCommand());
+        plugin.getCommand("back").setExecutor(new BackCommand());
+        plugin.getCommand("seen").setExecutor(new SeenCommand());
+    }
+
+    private void loadListeners() {
         // Retrieve the server
         Server server = getServer();
         // Register event listeners
@@ -41,6 +40,19 @@ public class BasicNeeds extends JavaPlugin {
         server.getPluginManager().registerEvents(new SilkSpawnerListener(), this);
         server.getPluginManager().registerEvents(new HeadDropListener(), this);
         server.getPluginManager().registerEvents(new DeathBanListener(), this);
+        server.getPluginManager().registerEvents(new StarvationListener(), this);
+        server.getPluginManager().registerEvents(new BackListener(), this);
+    }
+
+    @Override
+    public void onEnable () {
+        super.onEnable();
+        // Initialize the configuration file
+        ConfigFile.getInstance(this);
+        // Store plugin for access in other areas
+        plugin = this;
+        loadCommands();
+        loadListeners();
         // Log successful load to the server console
         this.getLogger().log( Level.INFO, "BasicNeeds successfully loaded.");
     }

@@ -1,5 +1,5 @@
 name: BasicNeeds
-version: 1.0
+version: 1.1
 main: basicneeds.BasicNeeds
 api-version: 1.19
 commands:
@@ -30,8 +30,14 @@ commands:
   spawn:
     description: Teleports the user to spawn.
     usage: /spawn
+  back:
+    description: Teleports the user to their previous location.
+    usage: /back
+  seen:
+    description: Gives the last time a provided player was seen online.
+    usage: /seen <player>
 permissions:
   basicneeds.admin:
-    description: Allow modification of the spawn region.
+    description: Allow admin privilege for BasicNeeds.
     default: op
 

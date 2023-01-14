@@ -61,7 +61,7 @@ public class SilkSpawnerListener implements Listener {
             newCreatureSpawner.update();
             blockMeta.setBlockState( newCreatureSpawner );
             // Update the item name and store the type on the item
-            blockMeta.setDisplayName( (ChatColor.ITALIC + "" + spawnerType.toString().charAt(0) + spawnerType.toString().toLowerCase().substring(1) + " Spawner").replace("_", " ") );
+            blockMeta.setDisplayName( (ChatColor.DARK_PURPLE + "" + spawnerType.toString().charAt(0) + spawnerType.toString().toLowerCase().substring(1) + " Spawner").replace("_", " ") );
             spawner.setItemMeta( blockMeta );
             // Drop the block in the world
             block.getWorld().dropItemNaturally( block.getLocation(), spawner );
