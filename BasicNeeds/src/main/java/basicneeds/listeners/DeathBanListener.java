@@ -40,12 +40,6 @@ public class DeathBanListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerSpawn( PlayerSpawnLocationEvent event ){
-        // Set the players spawn location to the world spawn on initial join
-        event.setSpawnLocation( Bukkit.getServer().getWorld( "world" ).getSpawnLocation() );
-    }
-
-    @EventHandler
     public void onPlayerRespawn( PlayerRespawnEvent event ){
         // Set players spawn location to the world spawn on death
         event.setRespawnLocation( Bukkit.getServer().getWorld( "world" ).getSpawnLocation() );
