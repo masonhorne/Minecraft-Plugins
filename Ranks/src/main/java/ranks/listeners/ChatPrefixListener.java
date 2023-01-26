@@ -18,13 +18,12 @@ public class ChatPrefixListener implements Listener {
         Player player = event.getPlayer();
         // Retrieve all groups for the player
         List<String> groups = PermissionsManager.getInstance().getGroups( player.getName() );
-        // If group exists, add prefix
-        if(groups.size() != 0) {
-            Group group = PermissionsManager.getInstance().getGroup( groups.get( 0 ) );
+        // If group doesn't exist, send formatted message
+        if(groups.size() == 0 ) event.setFormat(ChatColor.GRAY + player.getName() + " " + ChatColor.WHITE + event.getMessage());
+        else {
+            // Otherwise, send with prefix
+            Group group = PermissionsManager.getInstance().getGroup( groups.get( groups.size() - 1 ) );
             event.setFormat(group.getColor() + "[" + group.getName() + "] " + ChatColor.WHITE + player.getName() + " " + event.getMessage());
-        } else {
-            // Otherwise output w/o < >
-            event.setFormat(ChatColor.GRAY + player.getName() + " " + ChatColor.WHITE + event.getMessage());
         }
     }
 

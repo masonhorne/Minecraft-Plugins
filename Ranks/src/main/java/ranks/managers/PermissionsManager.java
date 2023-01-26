@@ -51,7 +51,11 @@ public class PermissionsManager {
         // Load the current configuration from the yaml
         config = YamlConfiguration.loadConfiguration( yml );
         // If no group section exists, add it to the file
-        if(!config.contains("groups")) config.createSection( "groups" );
+        if(!config.contains("groups")) {
+            config.createSection( "groups" );
+            // Initialize the default user permissions section
+            config.set("groups.Default", new ArrayList());
+        }
         // Initialize all groups in the system
         setupGroups();
     }
@@ -64,9 +68,7 @@ public class PermissionsManager {
             // Start with white prefix
             String assignColor = "&f";
             // If group color is assigned, assign prefix color
-            if(config.contains("groups." + group + ".color")) {
-                assignColor = config.getString( "groups." + group + ".color" );
-            }
+            if(config.contains("groups." + group + ".color")) assignColor = config.getString( "groups." + group + ".color" );
             ChatColor groupColor = String2Color.string2Color(assignColor);
             groups.add( new Group( group, groupColor ));
         }
@@ -185,11 +187,17 @@ public class PermissionsManager {
         if(!config.contains("user." + player.getName().toLowerCase() + ".groups")) config.set("user." + player.getName().toLowerCase() + ".groups", new ArrayList());
         // Store all groups in the users group section
         Group prefix = null;
-        for(String groupName : config.getStringList( "user." + player.getName().toLowerCase() + ".groups")) {
-            for(Group group : groups){
-                if(group.getName().equals(groupName)) {
-                    if(prefix == null) prefix = group;
-                    for(String permission : group.getPermissions()) attachments.get(player.getName()).setPermission(permission, true);
+        List<String> userGroups = config.getStringList( "user." + player.getName().toLowerCase() + ".groups" );
+        // Add default permissions for this user
+        userGroups.add("Default");
+        for (int i = userGroups.size() - 1; i >= 0; i--) {
+            String groupName = userGroups.get(i);
+            for ( Group group : groups ) {
+                if ( group.getName().equals( "Default" ) || group.getName().equals( groupName ) ) {
+                    if ( prefix == null && !group.getName().equals( "Default" ) )
+                        prefix = group;
+                    for ( String permission : group.getPermissions() )
+                        attachments.get( player.getName() ).setPermission( permission, true );
                 }
             }
         }
