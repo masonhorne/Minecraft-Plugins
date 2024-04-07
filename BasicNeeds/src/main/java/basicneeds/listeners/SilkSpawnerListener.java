@@ -1,10 +1,8 @@
 package basicneeds.listeners;
 
-import basicneeds.BasicNeeds;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
@@ -17,7 +15,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
+import basicneeds.BasicNeeds;
+
 public class SilkSpawnerListener implements Listener {
+
+    private static final int SILK_SPAWNER_RANGE = 64;
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
@@ -31,10 +33,10 @@ public class SilkSpawnerListener implements Listener {
             CreatureSpawner itemSpawner = (CreatureSpawner) blockMeta.getBlockState();
             // Then update the spawner type that was placed
             Bukkit.getScheduler().runTaskLater( BasicNeeds.getPlugin(), new Runnable()  {
-
                 @Override public void run () {
                     CreatureSpawner spawner = (CreatureSpawner) block.getState();
                     spawner.setSpawnedType( itemSpawner.getSpawnedType() );
+                    spawner.setRequiredPlayerRange( SILK_SPAWNER_RANGE );
                     spawner.update();
                 }
             }, 1L);
@@ -56,7 +58,6 @@ public class SilkSpawnerListener implements Listener {
             // Get the block meta and update the spawner item
             BlockStateMeta blockMeta = (BlockStateMeta) spawner.getItemMeta();
             CreatureSpawner newCreatureSpawner = (CreatureSpawner) blockMeta.getBlockState();
-            NamespacedKey key = new NamespacedKey( BasicNeeds.getPlugin(), "spawntype");
             newCreatureSpawner.setSpawnedType( spawnerType );
             newCreatureSpawner.update();
             blockMeta.setBlockState( newCreatureSpawner );

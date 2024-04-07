@@ -1,0 +1,8 @@
+groups:
+  Admin:
+    permissions:
+    - ranks.admin
+    color: '&4'
+  Default:
+    permissions:
+    - minecraft.command.seed

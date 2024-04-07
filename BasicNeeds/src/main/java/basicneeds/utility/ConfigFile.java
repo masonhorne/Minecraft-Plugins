@@ -1,10 +1,10 @@
 package basicneeds.utility;
 
+import java.io.File;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
 
 public class ConfigFile extends YamlConfiguration {
 
@@ -12,6 +12,7 @@ public class ConfigFile extends YamlConfiguration {
     private FileConfiguration configConfig;
     private static final String FILE_NAME = "config.yml";
     private static final String WORLD_KEY = "spawn-world";
+    private static final String DEATH_BAN_TIME_KEY = "death-ban-time";
 
     private static ConfigFile cf;
 
@@ -26,6 +27,10 @@ public class ConfigFile extends YamlConfiguration {
 
     public String getSpawnWorld() {
         return this.configConfig.get(WORLD_KEY).toString();
+    }
+
+    public int getDeathBanTime() {
+        return this.configConfig.getInt(DEATH_BAN_TIME_KEY);
     }
 
     private ConfigFile(JavaPlugin plugin) {

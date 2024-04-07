@@ -4,3 +4,5 @@
 
 # World that /spawn will teleport the player to
 spawn-world: "world"
+# Time in minutes that players will be banned on death
+death-ban-time: 15

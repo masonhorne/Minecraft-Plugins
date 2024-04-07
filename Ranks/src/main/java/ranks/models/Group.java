@@ -1,14 +1,14 @@
 package ranks.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import ranks.managers.PermissionsManager;
-import ranks.utility.String2Color;
 
-import java.util.ArrayList;
-import java.util.List;
+import ranks.managers.PermissionsManager;
 
 public class Group {
 

@@ -1,17 +1,18 @@
 package ranks.managers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
 import ranks.commands.CheckRankCommand;
 import ranks.commands.GroupRankCommand;
 import ranks.commands.RankCommand;
 import ranks.commands.UserRankCommand;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandManager implements CommandExecutor {
 
