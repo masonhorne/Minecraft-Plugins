@@ -1,0 +1,4 @@
+name: BetterPets
+version: 1.0
+main: betterpets.BetterPets
+api-version: 1.20

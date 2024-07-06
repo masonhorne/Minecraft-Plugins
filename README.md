@@ -30,4 +30,9 @@
 ## Scuba
 ### Commands
 - **/scuba:** When holding a piece of glass, equip it as scuba gear. Granting water-breathing, night-vision, and slowness until removal.
+## BetterPets
+### Features
+- Allows players to breed cats and dogs regardless of owner
+- The bred animal will belong to the player who initated the breeding
+- Child animals will inherit type/variant based upon the parent animals
 
