@@ -16,8 +16,8 @@ public class BreedingUtils {
         return items != null && items.contains(item.getType());
     }
 
-    public static boolean areLocationsCloseEnough(Location loc1, Location loc2) {
-        return loc1.distance(loc2) <= 3;
+    public static boolean areLocationsCloseEnough(Location loc1, Location loc2, int distance) {
+        return loc1.distance(loc2) <= distance;
     }
 
     public static Location getBreedingLocation(Location loc1, Location loc2) {

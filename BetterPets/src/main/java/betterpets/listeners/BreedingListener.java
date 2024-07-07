@@ -50,13 +50,15 @@ public class BreedingListener implements Listener {
         if (event.getFather() instanceof Tameable && event.getMother() instanceof Tameable) {
             BreedingManager breedingManager = BreedingManager.getInstance(); // Get the instance of the BreedingManager
             Tameable father = (Tameable) event.getFather(); // Cast the father entity to Tameable
+            EntityType fatherType = father.getType(); // Get the type of the father entity
             Tameable mother = (Tameable) event.getMother(); // Cast the mother entity to Tameable
+            EntityType motherType = mother.getType(); // Get the type of the mother entity
             UUID fatherUUID = father.getUniqueId(); // Get the UUID of the father entity
             UUID motherUUID = mother.getUniqueId(); // Get the UUID of the mother entity
             UUID playerUUID = breedingManager.getPlayerUUID(fatherUUID); // Get the UUID of the player who owns the father entity
             UUID secondPlayerUUID = breedingManager.getPlayerUUID(motherUUID); // Get the UUID of the player who owns the mother entity
-            // Check if the player is breeding the animals
-            if (playerUUID != null && playerUUID != secondPlayerUUID && event.getBreeder().getUniqueId().equals(playerUUID)) {
+            // Check if the player is breeding the animals and the animals breed together
+            if (playerUUID != null && playerUUID != secondPlayerUUID && fatherType == motherType && event.getBreeder().getUniqueId().equals(playerUUID)) {
                 Location breedingLocation = event.getEntity().getLocation(); // Get the location of the breeding event entity
                 EntityType babyType = event.getEntityType(); // Get the type of the baby entity
                 breedingManager.spawnTamedAnimal(babyType, breedingLocation, playerUUID, fatherUUID); // Spawn a tamed animal at the breeding location, owned by the player

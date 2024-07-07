@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Cat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Tameable;
 import org.bukkit.entity.Wolf;
@@ -24,6 +25,7 @@ public class BreedingManager {
     private BreedingManager(Plugin plugin) {
         entityManager = new EntityManager(plugin);
         taskManager = new BreedingTaskManager(plugin);
+        taskManager.setSpawnTamedAnimalFunction(this::handleAnimalSpawn);
     }
 
     public static synchronized BreedingManager initializeInstance(Plugin plugin) {
@@ -60,7 +62,13 @@ public class BreedingManager {
     }
 
     public void spawnTamedAnimal(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID) {
+        this.taskManager.scheduleSpawnTamedAnimal(entityType, location, playerUUID, parentUUID);
+    }
+
+    private void handleAnimalSpawn(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID) {
         Tameable babyAnimal = (Tameable) location.getWorld().spawnEntity(location, entityType);
+        ExperienceOrb xp = location.getWorld().spawn(location, ExperienceOrb.class);
+        xp.setExperience((int) Math.round(Math.random() * 7));
         taskManager.addBreedingLocation(location);
         babyAnimal.setBaby();
         Entity parentEntity = entityManager.getEntity(parentUUID);
@@ -85,45 +93,37 @@ public class BreedingManager {
 
     private void checkBreedingProximity() {
         Set<UUID> playerUUIDs = new HashSet<>(entityManager.getPlayerUUIDs());
-    
         for (UUID playerUUID : playerUUIDs) {
             Set<UUID> entityUUIDs = entityManager.getEntityUUIDs(playerUUID);
             if (entityUUIDs == null) {
                 continue;
             }
-    
             Set<UUID> processedAnimals = new HashSet<>();
             Set<UUID> animalsToRemove = new HashSet<>();
-    
             for (UUID entityUUID : entityUUIDs) {
                 if (processedAnimals.contains(entityUUID)) {
                     continue;
                 }
-    
                 EntityInfo entityInfo = entityManager.getEntityInfo(playerUUID, entityUUID);
                 if (entityInfo == null) {
                     continue;
                 }
-    
                 EntityType entityType = entityInfo.getEntityType();
                 Location entityLocation = entityInfo.getEntityLocation();
-    
                 for (UUID otherEntityUUID : entityUUIDs) {
                     if (!entityUUID.equals(otherEntityUUID) && !processedAnimals.contains(otherEntityUUID)) {
                         EntityInfo otherEntityInfo = entityManager.getEntityInfo(playerUUID, otherEntityUUID);
                         if (otherEntityInfo == null) {
                             continue;
                         }
-    
+                        EntityType otherEntityType = otherEntityInfo.getEntityType();
                         Location otherEntityLocation = otherEntityInfo.getEntityLocation();
-    
-                        if (BreedingUtils.areLocationsCloseEnough(entityLocation, otherEntityLocation)) {
+                        if (entityType == otherEntityType && BreedingUtils.areLocationsCloseEnough(entityLocation, otherEntityLocation, 2)) {
                             Location breedingLocation = BreedingUtils.getBreedingLocation(entityLocation, otherEntityLocation);
-                            spawnTamedAnimal(entityType, breedingLocation, playerUUID, entityUUID);
+                            taskManager.scheduleSpawnTamedAnimal(entityType, breedingLocation, playerUUID, entityUUID);
                             taskManager.addBreedingLocation(breedingLocation);
                             taskManager.scheduleLocationRemoval(breedingLocation);
     
-                            // Mark both entities as processed for this iteration
                             processedAnimals.add(entityUUID);
                             processedAnimals.add(otherEntityUUID);
                             animalsToRemove.add(entityUUID);
@@ -132,7 +132,6 @@ public class BreedingManager {
                     }
                 }
             }
-    
             for (UUID uuid : animalsToRemove) {
                 entityManager.removeLoveMode(playerUUID, uuid);
             }
