@@ -21,6 +21,7 @@ public class BreedingManager {
     private static BreedingManager instance;
     private final EntityManager entityManager;
     private final BreedingTaskManager taskManager;
+    private volatile Set<UUID> scheduledToSpawnChild = new HashSet<UUID>();
 
     private BreedingManager(Plugin plugin) {
         entityManager = new EntityManager(plugin);
@@ -61,14 +62,16 @@ public class BreedingManager {
         return taskManager.isBreedingLocation(location);
     }
 
-    public void spawnTamedAnimal(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID) {
-        this.taskManager.scheduleSpawnTamedAnimal(entityType, location, playerUUID, parentUUID);
+    public void spawnTamedAnimal(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID, UUID otherParentUUID) {
+        this.scheduledToSpawnChild.add(parentUUID);
+        this.scheduledToSpawnChild.add(otherParentUUID);
+        this.taskManager.scheduleSpawnTamedAnimal(entityType, location, playerUUID, parentUUID, otherParentUUID);
     }
 
-    private void handleAnimalSpawn(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID) {
+    private void handleAnimalSpawn(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID, UUID otherParentUUID) {
         Tameable babyAnimal = (Tameable) location.getWorld().spawnEntity(location, entityType);
         ExperienceOrb xp = location.getWorld().spawn(location, ExperienceOrb.class);
-        xp.setExperience((int) Math.round(Math.random() * 7));
+        xp.setExperience((int) Math.round(Math.random() * 7) + 1);
         taskManager.addBreedingLocation(location);
         babyAnimal.setBaby();
         Entity parentEntity = entityManager.getEntity(parentUUID);
@@ -89,6 +92,8 @@ public class BreedingManager {
             babyAnimal.setTamed(true);
             babyAnimal.setOwner(player);
         }
+        removeLoveMode(playerUUID, parentUUID);
+        removeLoveMode(playerUUID, otherParentUUID);
     }
 
     private void checkBreedingProximity() {
@@ -99,9 +104,8 @@ public class BreedingManager {
                 continue;
             }
             Set<UUID> processedAnimals = new HashSet<>();
-            Set<UUID> animalsToRemove = new HashSet<>();
             for (UUID entityUUID : entityUUIDs) {
-                if (processedAnimals.contains(entityUUID)) {
+                if (scheduledToSpawnChild.contains(entityUUID)) {
                     continue;
                 }
                 EntityInfo entityInfo = entityManager.getEntityInfo(playerUUID, entityUUID);
@@ -111,7 +115,7 @@ public class BreedingManager {
                 EntityType entityType = entityInfo.getEntityType();
                 Location entityLocation = entityInfo.getEntityLocation();
                 for (UUID otherEntityUUID : entityUUIDs) {
-                    if (!entityUUID.equals(otherEntityUUID) && !processedAnimals.contains(otherEntityUUID)) {
+                    if (!entityUUID.equals(otherEntityUUID) && !processedAnimals.contains(otherEntityUUID) && !scheduledToSpawnChild.contains(otherEntityUUID)) {
                         EntityInfo otherEntityInfo = entityManager.getEntityInfo(playerUUID, otherEntityUUID);
                         if (otherEntityInfo == null) {
                             continue;
@@ -120,20 +124,15 @@ public class BreedingManager {
                         Location otherEntityLocation = otherEntityInfo.getEntityLocation();
                         if (entityType == otherEntityType && BreedingUtils.areLocationsCloseEnough(entityLocation, otherEntityLocation, 2)) {
                             Location breedingLocation = BreedingUtils.getBreedingLocation(entityLocation, otherEntityLocation);
-                            taskManager.scheduleSpawnTamedAnimal(entityType, breedingLocation, playerUUID, entityUUID);
+                            spawnTamedAnimal(entityType, entityLocation, playerUUID, entityUUID, playerUUID);
                             taskManager.addBreedingLocation(breedingLocation);
                             taskManager.scheduleLocationRemoval(breedingLocation);
     
                             processedAnimals.add(entityUUID);
                             processedAnimals.add(otherEntityUUID);
-                            animalsToRemove.add(entityUUID);
-                            animalsToRemove.add(otherEntityUUID);
                         }
                     }
                 }
-            }
-            for (UUID uuid : animalsToRemove) {
-                entityManager.removeLoveMode(playerUUID, uuid);
             }
         }
     }    

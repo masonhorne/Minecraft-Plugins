@@ -61,7 +61,7 @@ public class BreedingListener implements Listener {
             if (playerUUID != null && playerUUID != secondPlayerUUID && fatherType == motherType && event.getBreeder().getUniqueId().equals(playerUUID)) {
                 Location breedingLocation = event.getEntity().getLocation(); // Get the location of the breeding event entity
                 EntityType babyType = event.getEntityType(); // Get the type of the baby entity
-                breedingManager.spawnTamedAnimal(babyType, breedingLocation, playerUUID, fatherUUID); // Spawn a tamed animal at the breeding location, owned by the player
+                breedingManager.spawnTamedAnimal(babyType, breedingLocation, playerUUID, fatherUUID, motherUUID); // Spawn a tamed animal at the breeding location, owned by the player
                 breedingManager.removeLoveMode(playerUUID, fatherUUID); // Remove the father entity from the breeding manager mappings
                 breedingManager.removeLoveMode(playerUUID, motherUUID); // Remove the mother entity from the breeding manager mappings
             }

@@ -47,13 +47,13 @@ public class BreedingTaskManager {
         }.runTaskLater(plugin, 600L); // 30 seconds (time love mode lasts for)
     }
 
-    public void scheduleSpawnTamedAnimal(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID){
+    public void scheduleSpawnTamedAnimal(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID, UUID otherParentUUID){
         long delay = Math.round(20 + 20. * Math.random() * 2); // 1 second delay with random addition of 1-2 seconds
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (spawnTamedAnimalFunction != null) {
-                    spawnTamedAnimalFunction.spawn(entityType, location, playerUUID, parentUUID);
+                    spawnTamedAnimalFunction.spawn(entityType, location, playerUUID, parentUUID, otherParentUUID);
                 }
             }
         }.runTaskLater(plugin, delay);
@@ -87,6 +87,6 @@ public class BreedingTaskManager {
 
     @FunctionalInterface
     public interface SpawnTamedAnimalFunction {
-        void spawn(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID);
+        void spawn(EntityType entityType, Location location, UUID playerUUID, UUID parentUUID, UUID otherParentUUID);
     }
 }
